@@ -11,7 +11,7 @@ test('05_template-literals-1: should support string interpolation', () => {
     ],
   }
   // construeix una cadena utilitzant la interpolació de literals de plantilla
-  const personsFriends = ``
+  const personsFriends = `${person.name} has ${person.friends.length} friends: ${person.friends.join(', ')}`
   expect(personsFriends).toBe(
     'Kent C. Dodds has 6 friends: Brooke Dodds, Matt Zabriskie, Aaron Frost, Dave Geddes, Joe Eames, Ryan Florence',
   )
@@ -19,29 +19,36 @@ test('05_template-literals-1: should support string interpolation', () => {
 
 test('05_template-literals-2: should support multi-line strings', () => {
   // construeix una cadena amb múltiples línies sense necessitat de caràcters de nova línia escapats
-  const multiLine = ``
+  const multiLine = `
+    How cool
+    is this!?
+  `
   expect(multiLine).toBe('\n    How cool\n    is this!?\n  ')
 })
 
 test('05_template-literals-3: should support string escaping', () => {
   // escapa correctament una cadena en un literal de plantilla per a cadascun d'aquests casos
-  expect(``).toBe('Hi\nthere!')
-  expect(``).toBe('This is `escaped` backticks')
+  expect(`Hi\nthere!`).toBe('Hi\nthere!')
+  expect(`This is \`escaped\` backticks`).toBe('This is `escaped` backticks')
 })
 
 //////// EXTRA CREDIT ////////
 
 // és probable que no utilitzis sovint l'etiquetatge, però pot ser útil!
-test.skip('05_template-literals-4: should call the tagging function', () => {
+test('05_template-literals-4: should call the tagging function', () => {
   const tagIt = (literalString, ...interpolatedParts) => {
-    // implementa aquesta funció per fer que el test passi
-    return 'fixme'
-  }
-  const noun = 'World'
-  const emotion = 'happy'
-  const result = tagIt`Hello ${noun}! Are you feeling ${emotion} today?`
+    // literalString contém as partes de texto: ["Hello ", "! Are you feeling ", " today?"]
+    // interpolatedParts contém as variáveis: ["World", "happy"]
+    const [noun, emotion] = interpolatedParts;
+    
+    return `${literalString[0]}super-cool ${noun}${literalString[1]}really ${emotion}${literalString[2]}`;
+  };
+
+  const noun = 'World';
+  const emotion = 'happy';
+  const result = tagIt`Hello ${noun}! Are you feeling ${emotion} today?`;
+  
   expect(result).toBe(
     'Hello super-cool World! Are you feeling really happy today?',
-  )
-
-})
+  );
+});
