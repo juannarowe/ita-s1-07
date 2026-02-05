@@ -1,5 +1,13 @@
 test('07_object-literal-1: can use shorthand for property names', () => {
   const  createMonster = (name, power) => {
+    return {
+      type: 'Monster',
+      name,
+      power,
+      attack(target){
+        return `${this.name} attacked ${target.name}`;
+      }
+    }
     // Utilitza la nova sintaxi del literal d'Object, per tornar un literal que permeti passar els testos
     // return {
     //   type: 'Monster',
@@ -23,6 +31,7 @@ test('07_object-literal-2: can use expressions as property names', () => {
     return {
       tasty: true,
       type,
+      [type.toUpperCase() + type.length]: description
       // afegeix una expressió com a nom de propietat on el nom de la propietat sigui el resultat de type.toUpperCase() + type.length
       // sembla forçat? Ho és... 😅
     }
