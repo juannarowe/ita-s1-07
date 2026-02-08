@@ -1,12 +1,6 @@
-// Per a cada bloc then() o catch(), decideix si s'ha d'executar o no
-// Si s'ha d'executar, indica quin valor rebrà a `result` o `error`
-// Si no s'ha d'executar, descomenta la línia que llança l'error
-
+// La función que genera la promesa debe estar definida para que los tests la encuentren
 const pickApple = (ripeness) => {
-  // Retorna immediatament una promesa que eventualment serà resolta
-  // o rebutjada cridant la funció corresponent.
   return new Promise((resolve, reject) => {
-    // Fes alguna cosa asíncrona. Podria ser AJAX, utilitzant un timeout aquí.
     setTimeout(() => {
       if (ripeness === 'ripe') {
         resolve('ripe apple')
@@ -23,20 +17,17 @@ test('14_promises-1: should resolve', () => {
   return pickApple('ripe')
     .then(
       result => {
-        // throw new Error('això no s'hauria d'executar')
-        // expect(result).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-        throw new Error('assert o llança aquí')
+        // SE EJECUTA: La promesa se resuelve correctamente
+        expect(result).toBe('ripe apple')
       },
       error => {
-        // throw new Error('això no s'hauria d'executar')
-        // expect(error).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-        throw new Error('assert o llança aquí')
+        // NO SE EJECUTA
+        throw new Error("això no s'hauria d'executar")
       },
     )
     .catch(error => {
-      // throw new Error('això no s'hauria d'executar')
-      // expect(error).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-      throw new Error('assert o llança aquí')
+      // NO SE EJECUTA
+      throw new Error("això no s'hauria d'executar")
     })
 })
 
@@ -44,35 +35,28 @@ test('14_promises-2: should reject', () => {
   return pickApple('unripe')
     .then(
       result => {
-        // throw new Error('això no s'hauria d'executar')
-        // expect(result).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-        throw new Error('assert o llança aquí')
+        // NO SE EJECUTA
+        throw new Error("això no s'hauria d'executar")
       },
       error => {
-        // throw new Error('això no s'hauria d'executar')
-        // expect(error).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-        throw new Error('assert o llança aquí')
+        // SE EJECUTA: El segundo argumento de .then maneja el reject
+        expect(error).toBe('unripe apple')
       },
     )
     .catch(error => {
-      // throw new Error('això no s'hauria d'executar')
-      // expect(error).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-      throw new Error('assert o llança aquí')
+      // NO SE EJECUTA: El error ya fue capturado arriba
+      throw new Error("això no s'hauria d'executar")
     })
 })
 
 test('14_promises-3: errors can be caught', () => {
-  return pickApple()
+  return pickApple() // Sin argumentos va al error 'out of apples'
     .then(result => {
-      // throw new Error('això no s'hauria d'executar')
-      // expect(result).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-      throw new Error('assert o llança aquí')
+      // NO SE EJECUTA
+      throw new Error("això no s'hauria d'executar")
     })
     .catch(error => {
-      // throw new Error('això no s'hauria d'executar')
-      // expect(error).toBe(/*INTRODUEIX LA TEVA RESPOSTA AQUÍ*/)
-      throw new Error('assert o llança aquí')
+      // SE EJECUTA: El .catch captura el error del reject
+      expect(error.message).toBe('out of apples')
     })
 })
-
-
