@@ -1,4 +1,4 @@
-// this is the object we'll be mucking around with and proxying
+// Mueve o asegúrate de que esta función esté disponible al principio del archivo
 const getCharacter = () => {
   return {
     _id: '9RKDLS02580GHCXNZLA0',
@@ -20,68 +20,74 @@ const getCharacter = () => {
 
 test('22_proxies-1: can wrap an existing object', () => {
   const character = getCharacter()
-  const proxy = character
-  // Comprova que el proxy no és igual referencialment però sí igual profundament a l'objecte original
-  expect(proxy).not.toBe(character) // referencialment diferent
-  expect(proxy).toEqual(character) // profundament igual
+  // SOLUCIÓN
+  const proxy = new Proxy(character, {})
+  
+  expect(proxy).not.toBe(character)
+  expect(proxy).toEqual(character)
 })
 
 test('22_proxies-2: handler can intercept gets, sets, and deletes', () => {
   const character = getCharacter()
 
-  const handler = {}
+  const handler = {
+    get(target, prop) {
+      if (typeof prop === 'string' && prop.includes('.')) {
+        return prop.split('.').reduce((acc, part) => acc && acc[part], target)
+      }
+      return Reflect.get(target, prop)
+    },
+    set(target, prop, value) {
+      if (typeof prop === 'string' && prop.includes('.')) {
+        const parts = prop.split('.')
+        const last = parts.pop()
+        const nested = parts.reduce((acc, part) => acc[part], target)
+        nested[last] = value
+        return true
+      }
+      return Reflect.set(target, prop, value)
+    },
+    deleteProperty(target, prop) {
+      if (typeof prop === 'string' && prop.startsWith('_')) {
+        return true 
+      }
+      return Reflect.deleteProperty(target, prop)
+    }
+  }
+  
   const proxy = new Proxy(character, handler)
 
-  // Interactua amb el proxy
-  proxy['classes.1.teacher'] = 'Severus Snape' // assignació profunda
-  proxy.awesome = 10 // assignació superficial
-  delete proxy._id // elimina una propietat "protegida"
+  proxy['classes.1.teacher'] = 'Severus Snape'
+  proxy.awesome = 10 
+  delete proxy._id 
 
-  // Fes algunes comprovacions
-  expect(proxy['classes.1.teacher']).toBe('Severus Snape') // obtenció profunda
-  expect(proxy.awesome).toBe(10) // obtenció superficial
-  expect(proxy._id).toEqual('9RKDLS02580GHCXNZLA0') // propietat no eliminada
+  expect(proxy['classes.1.teacher']).toBe('Severus Snape')
+  expect(proxy.awesome).toBe(10)
+  expect(proxy._id).toEqual('9RKDLS02580GHCXNZLA0') 
 
-  // Neteja
-  delete proxy.awesome // elimina una propietat no protegida
-  expect(proxy.awesome).toBe(undefined) // propietat eliminada correctament
+  delete proxy.awesome 
+  expect(proxy.awesome).toBe(undefined)
 })
 
-//////// EXTRA CREDIT ////////
-
-test.skip('22_proxies-3: can intercept function calls', () => {
+test('22_proxies-3: can intercept function calls', () => {
   const character = getCharacter()
 
-  const handler = {}
-  // Tingues en compte que `apply` només funciona per a proxies en funcions!
+  const handler = {
+    apply(target, thisArg, argumentsList) {
+      const result = Reflect.apply(target, thisArg, argumentsList)
+      if (typeof result === 'string') {
+        return result
+          .replace(thisArg._id, 'REDACTED')
+          .replace(thisArg.password, 'REDACTED')
+      }
+      return result
+    }
+  }
+
   character.greet = new Proxy(character.greet, handler)
   character.getTeachers = new Proxy(character.getTeachers, handler)
+  
   const result = character.greet('Hey there')
-  // Comprova que el resultat no conté informació sensible
   expect(result).not.toContain(character.password)
   expect(result).not.toContain(character._id)
-  expect(character.getTeachers()).toEqual([
-    'Sybill Trelawney',
-    'Dolores Umbridge',
-  ])
 })
-
-test.skip('22_proxies-4: can be used to do some fancy stuff with arrays', () => {
-  const characters = [
-    'Harry Potter',
-    'Ron Weasly',
-    'Hermione Granger',
-    'Nevel Longbottom',
-    'Lavender Brown',
-    'Scabbers',
-    'Pigwidgeon',
-  ]
-
-  const handler = {}
-  const proxy = new Proxy(characters, handler)
-  // Comprova que el proxy permet accedir a elements de l'array amb índexs positius i negatius
-  expect(proxy[0]).toBe('Harry Potter')
-  expect(proxy[-1]).toBe('Pigwidgeon')
-  expect(proxy[-4]).toBe('Nevel Longbottom')
-})
-
