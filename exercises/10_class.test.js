@@ -1,7 +1,10 @@
 test('10_class-1: has a constructor for initialization', () => {
-  // Crea una classe Animal
-  // Afegeix un constructor que prengui un paràmetre, el nom.
-  // Assigna this.name al nom passat com a paràmetre
+  // SOLUCIÓN: Definimos la clase con un constructor básico.
+  class Animal {
+    constructor(name) {
+      this.name = name;
+    }
+  }
 
   const animal = new Animal()
   const dog = new Animal('Dog')
@@ -11,8 +14,12 @@ test('10_class-1: has a constructor for initialization', () => {
 })
 
 test('10_class-2: constructor can have default param values', () => {
-  // Crea una classe Animal amb un constructor
-  // Fes que la classe tingui un valor per defecte (utilitzant paràmetres per defecte) per al nom: 'Honey Badger'
+  // SOLUCIÓN: Aplicamos lo que aprendimos en el módulo 08 (parámetros por defecto).
+  class Animal {
+    constructor(name = 'Honey Badger') {
+      this.name = name;
+    }
+  }
 
   const animal = new Animal()
   const dog = new Animal('Dog')
@@ -22,18 +29,30 @@ test('10_class-2: constructor can have default param values', () => {
 })
 
 test('10_class-3: can have instance methods', () => {
-  // Crea una classe Animal, passa el nom al constructor i afegeix una funció sayName a la definició de la classe
+  // SOLUCIÓN: Los métodos de instancia se definen sin la palabra 'function'.
+  class Animal {
+    constructor(name = 'Honey Badger') {
+      this.name = name;
+    }
+    sayName() {
+      return `My name is: ${this.name}`;
+    }
+  }
 
   const animal = new Animal()
 
   expect(animal.sayName).toBeDefined()
-  expect(Animal.sayName).toBeUndefined()
+  expect(Animal.sayName).toBeUndefined() // Los métodos de instancia no están en la clase, sino en el objeto.
   expect(animal.sayName()).toBe('My name is: Honey Badger')
 })
 
 test('10_class-4: can have static methods', () => {
-  // Crea una classe Animal, passa el nom al constructor,
-  // i afegeix un mètode estàtic create que prengui un nom i retorni una instància
+  // SOLUCIÓN: Usamos 'static' para métodos que pertenecen a la Clase, no al objeto.
+  class Animal {
+    static create(name) {
+      return new Animal(name);
+    }
+  }
 
   const animal = new Animal()
 
@@ -42,9 +61,21 @@ test('10_class-4: can have static methods', () => {
 })
 
 test('10_class-5: can extend another class', () => {
-  // Crea una classe Animal
-  // Crea una classe Dog que extengui Animal
-  // Afegeix el mètode sayName a Dog
+  // SOLUCIÓN: Usamos 'extends' para heredar y 'super' para llamar al padre.
+  class Animal {
+    constructor(name) {
+      this.name = name;
+    }
+  }
+
+  class Dog extends Animal {
+    constructor(name) {
+      super(name); // Llama al constructor de Animal
+    }
+    sayName() {
+      return this.name;
+    }
+  }
 
   const dog = new Dog('Fido')
 
@@ -55,9 +86,15 @@ test('10_class-5: can extend another class', () => {
 })
 
 test('10_class-6: can use property setters and getters', () => {
-  // Crea una classe Animal (no passis el nom al constructor)
-  // Afegeix un setter per a la propietat name
-  // Afegeix un getter per a la propietat name
+  // SOLUCIÓN: Usamos 'get' y 'set' para interceptar el acceso a propiedades.
+  class Animal {
+    set name(newName) {
+      this._name = newName; // Usamos _name para evitar recursión infinita
+    }
+    get name() {
+      return `${this._name} type of animal`;
+    }
+  }
 
   const animal = new Animal()
   animal.name = 'Dog'
@@ -65,5 +102,3 @@ test('10_class-6: can use property setters and getters', () => {
   animal.name = 'Cat'
   expect(animal.name).toBe('Cat type of animal')
 })
-
-
