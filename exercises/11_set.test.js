@@ -1,6 +1,12 @@
 test('11_set-1: has an add method and a has method', () => {
   // Crea un nou Set anomenat 'mySet'
   // Afegeix els números 1, 2 i 3 al set
+  
+  // SOLUCIÓN: Creamos la instancia y usamos .add() para insertar valores.
+  const mySet = new Set()
+  mySet.add(1)
+  mySet.add(2)
+  mySet.add(3)
 
   expect(mySet.has(1)).toBe(true)
   expect(mySet.has(2)).toBe(true)
@@ -11,8 +17,15 @@ test('11_set-1: has an add method and a has method', () => {
 test('11_set-2: doesn`t allow duplicates', () => {
   // Crea un nou Set
   // Afegeix els següents números al set utilitzant set.add(num): 1, 1, 1
+  
+  // SOLUCIÓN: Aunque añadimos el '1' tres veces, el Set solo guarda una instancia.
+  const mySet = new Set()
+  mySet.add(1)
+  mySet.add(1)
+  mySet.add(1)
 
   expect(mySet.has(1)).toBe(true)
+  expect(mySet.size).toBe(1) // El tamaño será 1, no 3.
   expect(mySet.has(2)).toBe(false)
   expect(mySet.has(3)).toBe(false)
   expect(mySet.has(4)).toBe(false)
