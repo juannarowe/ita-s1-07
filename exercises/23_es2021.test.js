@@ -4,7 +4,15 @@ test('23_es2021-1: Logical assignment operators (&&=, ||=, ??=)', () => {
   let b = false
   let c = null
 
-  // Resol aquí...
+  // SOLUCIÓN:
+  // a &&= 'assigned' -> Si 'a' es truthy, se le asigna el nuevo valor.
+  a &&= 'assigned'
+  
+  // b ||= 'default'  -> Si 'b' es falsy (como false), se le asigna el valor.
+  b ||= 'default'
+  
+  // c ??= 'fallback' -> Si 'c' es null o undefined (nullish), se le asigna el valor.
+  c ??= 'fallback'
 
   expect(a).toBe('assigned')
   expect(b).toBe('default')
@@ -12,21 +20,22 @@ test('23_es2021-1: Logical assignment operators (&&=, ||=, ??=)', () => {
 })
 
 test('23_es2021-2: Numeric separators improve readability', () => {
-  // Declara un número gran utilitzant separadors numèrics per millorar la llegibilitat.
-  const largeNumber = null // Resol aquí...
+  // SOLUCIÓN: Usamos guiones bajos (_) para separar los miles. 
+  // JS los ignora al procesar, pero para nosotros es más fácil leerlo.
+  const largeNumber = 1_000_000
 
   expect(largeNumber).toBe(1000000)
 })
 
 test('23_es2021-3: Promise.any returns the first resolved promise', async () => {
-  // Utilitza Promise.any per obtenir la primera promesa resolta.
   const promises = [
     Promise.reject('Error'),
     Promise.resolve('First resolved'),
     Promise.resolve('Second resolved'),
   ]
 
-  const result = null // Resol aquí...
+  // SOLUCIÓN: Promise.any ignora los rechazos y se queda con la primera que tenga éxito.
+  const result = await Promise.any(promises)
 
   expect(result).toBe('First resolved')
 })
