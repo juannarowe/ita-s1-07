@@ -1,29 +1,37 @@
 test('13_weakmap-1: has a WeakMap method', () => {
   const key = {name: 'Aaron'}
   const value = {twitter: '@js_dev', gplus: '+AaronFrost'}
-  // Crea un nou WeakMap anomenat 'myMap'
-  // Afegeix una nova entrada. Utilitza key com a clau i value com a valor
+  
+  // SOLUCIÓN: Creamos el WeakMap y usamos .set()
+  const myMap = new WeakMap()
+  myMap.set(key, value)
+  
   expect(myMap.has(key)).toBe(true)
 })
 
 test('13_weakmap-2: should enable private members in classes', () => {
-  // Si arribes fins aquí, escriu una classe amb variables membres privades utilitzant WeakMaps
+  // SOLUCIÓN: Usamos WeakMaps fuera de la clase para guardar datos 
+  // que no sean accesibles desde la instancia (propiedades privadas).
+  const privateData = new WeakMap()
+
   class Person {
     constructor(name, age) {
-      this._name = name
-      this._age = age
+      // Guardamos el objeto de la instancia (this) como clave
+      privateData.set(this, { name, age })
     }
 
     getName() {
-      return this._name
+      return privateData.get(this).name
     }
 
     getAge() {
-      return this._age
+      return privateData.get(this).age
     }
   }
 
   const person = new Person('Kent C. Dodds', 26)
+  
+  // Estas propiedades ya no existen directamente en el objeto
   expect(person._name).toBeUndefined()
   expect(person.getName()).toBe('Kent C. Dodds')
   expect(person._age).toBeUndefined()
